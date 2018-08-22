@@ -1,11 +1,9 @@
 package com.gaofeng.prisonusercenter;
 
+import com.didi.meta.javalib.JLog;
 import com.didi.meta.javalib.JResponse;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -17,8 +15,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class WebLogicAspect {
 
-    @Pointcut("execution(public * com.gaofeng.prisonusercenter.controller..*(..)) && @annotation(org.springframework.web" +
-            ".bind.annotation.RequestMapping)")
+    @Pointcut("execution(public * com.gaofeng.prisonusercenter.controller..*(..)) && @annotation" +
+            "(org.springframework.web.bind.annotation.RequestMapping)")
     public void weblogic() {
     }
 
