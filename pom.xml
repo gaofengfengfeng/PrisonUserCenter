@@ -24,9 +24,9 @@
 
         <!-- dblib依赖-->
         <dependency>
-            <groupId>com.class</groupId>
-            <artifactId>dblib</artifactId>
-            <version>1.0</version>
+            <groupId>com.gaofeng</groupId>
+            <artifactId>PrisonDBlib</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <!-- springboot启动依赖包-->
