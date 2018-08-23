@@ -1,4 +1,4 @@
-package com.gaofeng.prisonusercenter.beans.prisoner;
+package com.gaofeng.prisonusercenter.beans.common;
 
 import com.didi.meta.javalib.JResponse;
 

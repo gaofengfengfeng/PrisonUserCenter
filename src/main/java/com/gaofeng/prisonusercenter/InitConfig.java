@@ -13,8 +13,9 @@ import java.util.HashSet;
  */
 public class InitConfig {
     public static final String REDISPOOL = "redispool";
-    public static Integer RANDOM_NUM_EXPIRE_TIME = 60;
-    public static Integer ONE_DAY_EXPIRE = 24 * 60 * 60;
+    public static final Integer ONE_DAY_EXPIRE = 24 * 60 * 60;
+    public static final String PRISONER_LOGIN_PRE = "prisoner_login_pre_";
+    public static final String PRISONER_FAMILY_LOGIN_PRE = "prisoner_family_login_pre_";
 
     public static void init() {
         JProperties.init();

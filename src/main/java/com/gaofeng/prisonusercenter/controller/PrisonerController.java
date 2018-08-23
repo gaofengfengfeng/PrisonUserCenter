@@ -6,7 +6,7 @@ import com.didi.meta.javalib.JToken;
 import com.didi.meta.javalib.service.JRedisPoolService;
 import com.gaofeng.prisonusercenter.InitConfig;
 import com.gaofeng.prisonusercenter.beans.prisoner.LoginReq;
-import com.gaofeng.prisonusercenter.beans.prisoner.LoginResponse;
+import com.gaofeng.prisonusercenter.beans.common.LoginResponse;
 import com.gaofeng.prisonusercenter.beans.prisoner.LogoutReq;
 import com.gaofeng.prisonusercenter.beans.prisoner.RegisterReq;
 import com.gaofeng.prisonusercenter.service.PrisonerService;
@@ -90,22 +90,17 @@ public class PrisonerController {
         switch (loginRet) {
             case 1:
                 // 登陆成功，返回给前端一个token值
-                //生成token
-                String token = JToken.makeToken(loginReq.getPrisonerCodeNum(),
-                        InitConfig.ONE_DAY_EXPIRE.longValue());
-                // 将token存储在redis中，key值为prisonerCodeNum
-                try {
-                    Jedis jedis =
-                            JRedisPoolService.getJedisPool(InitConfig.REDISPOOL).getResource();
-                    jedis.setex(loginReq.getPrisonerCodeNum(), InitConfig.ONE_DAY_EXPIRE, token);
-                } catch (Exception e) {
-                    JLog.error("redis exception errMsg=" + e.getMessage(), 101222201);
+                // 生成token
+                String token = ps.processToken(InitConfig.PRISONER_LOGIN_PRE +
+                        loginReq.getPrisonerCodeNum(), InitConfig.ONE_DAY_EXPIRE);
+                if (token == null) {
                     loginResponse.setErrNo(101222201);
                     loginResponse.setErrMsg("redis exception");
                     return loginResponse;
+                } else {
+                    // 组建返回给前端的结果
+                    loginResponse.setData(token);
                 }
-                // 组建返回给前端的结果
-                loginResponse.setData(token);
                 break;
             case 2:
                 loginResponse.setErrNo(101222150);
@@ -138,7 +133,7 @@ public class PrisonerController {
         // 从redis中寻找该用户的token是否还存在，如果不存在直接返回注销成功，如果存在，删除了再返回注销成功
         try {
             Jedis jedis = JRedisPoolService.getJedisPool(InitConfig.REDISPOOL).getResource();
-            jedis.del(logoutReq.getPrisonerCodeNum());
+            jedis.del(InitConfig.PRISONER_LOGIN_PRE + logoutReq.getPrisonerCodeNum());
         } catch (Exception e) {
             JLog.error("redis exception errMsg=" + e.getMessage(), 101230938);
             jResponse.setErrNo(101230938);

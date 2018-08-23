@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
  * @Description:
  */
 @Service
-public class PrisonerService {
+public class PrisonerService extends BaseService {
 
     private PrisonerMapper pm;
 
