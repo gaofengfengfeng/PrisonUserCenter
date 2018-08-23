@@ -14,6 +14,7 @@ import java.util.HashSet;
 public class InitConfig {
     public static final String REDISPOOL = "redispool";
     public static Integer RANDOM_NUM_EXPIRE_TIME = 60;
+    public static Integer ONE_DAY_EXPIRE = 24 * 60 * 60;
 
     public static void init() {
         JProperties.init();

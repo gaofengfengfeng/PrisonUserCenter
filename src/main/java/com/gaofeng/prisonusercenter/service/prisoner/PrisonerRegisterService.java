@@ -6,6 +6,7 @@ import com.didi.meta.javalib.JLog;
 import com.gaofeng.prisonDBlib.model.Prisoner;
 import com.gaofeng.prisonDBlib.model.PrisonerMapper;
 import com.gaofeng.prisonDBlib.model.Role;
+import com.gaofeng.prisonusercenter.beans.prisoner.LoginReq;
 import com.gaofeng.prisonusercenter.beans.prisoner.RegisterReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class PrisonerRegisterService {
      * @return 0:失败 1：成功 2:该用户已经注册过(以后添加校验之后可能会返回更多种数字结果)
      */
     public Integer register(RegisterReq registerReq) {
-        JLog.info("prisoner register prisonerCodeNum=" + registerReq.getPrisonerCodeNum() + " " +
+        JLog.info("prisoner register service prisonerCodeNum=" + registerReq.getPrisonerCodeNum() + " " +
                 "prisonerName=" + registerReq.getPrisonerName());
 
         // 根据prisonerCodeNum查找数据库，看该用户是否已经注册过
@@ -73,6 +74,29 @@ public class PrisonerRegisterService {
             return 0;
         }
         JLog.info("save prisoner success prisonerCodeNum=" + registerReq.getPrisonerCodeNum());
+        return 1;
+    }
+
+    /**
+     * 犯人登陆
+     *
+     * @param loginReq
+     *
+     * @return 1:登陆成功 2：用户不存在 3：密码错误
+     */
+    public Integer login(LoginReq loginReq) {
+        JLog.info("prisoner login service prisonerCodeNum=" + loginReq.getPrisonerCodeNum());
+        Prisoner prisoner = pm.findByPrisonerCodeNum(loginReq.getPrisonerCodeNum());
+        if (prisoner == null) {
+            // 用户不存在
+            JLog.warn("no prisoner in db prisonerCodeNum=" + loginReq.getPrisonerCodeNum());
+            return 2;
+        } else if (!prisoner.getPassword().equals(Conversion.getMD5(loginReq.getPassword() +
+                prisoner.getSalt()))) {
+            // 密码错误
+            JLog.warn("password error");
+            return 3;
+        }
         return 1;
     }
 }

@@ -2,12 +2,18 @@ package com.gaofeng.prisonusercenter.controller;
 
 import com.didi.meta.javalib.JLog;
 import com.didi.meta.javalib.JResponse;
+import com.didi.meta.javalib.JToken;
+import com.didi.meta.javalib.service.JRedisPoolService;
+import com.gaofeng.prisonusercenter.InitConfig;
+import com.gaofeng.prisonusercenter.beans.prisoner.LoginReq;
+import com.gaofeng.prisonusercenter.beans.prisoner.LoginResponse;
 import com.gaofeng.prisonusercenter.beans.prisoner.RegisterReq;
 import com.gaofeng.prisonusercenter.service.prisoner.PrisonerRegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import redis.clients.jedis.Jedis;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -62,5 +68,57 @@ public class PrisonerController {
                 break;
         }
         return jResponse;
+    }
+
+    /**
+     * 罪犯用户登陆
+     *
+     * @param request
+     *
+     * @return
+     */
+    @RequestMapping(value = "/login")
+    public LoginResponse login(HttpServletRequest request, @RequestBody @Valid LoginReq loginReq) {
+        LoginResponse loginResponse = JResponse.initResponse(request, LoginResponse.class);
+        JLog.info("prisoner login prisonerCodeNum=" + loginReq.getPrisonerCodeNum());
+
+        // 用户登陆
+        Integer loginRet = prs.login(loginReq);
+
+        // 根据不同的LoginRet值返回不同的错误信息
+        switch (loginRet) {
+            case 1:
+                // 登陆成功，返回给前端一个token值
+                //生成token
+                String token = JToken.makeToken(loginReq.getPrisonerCodeNum(),
+                        InitConfig.ONE_DAY_EXPIRE.longValue());
+                // 将token存储在redis中，key值为prisonerCodeNum
+                try {
+                    Jedis jedis =
+                            JRedisPoolService.getJedisPool(InitConfig.REDISPOOL).getResource();
+                    jedis.setex(loginReq.getPrisonerCodeNum(), InitConfig.ONE_DAY_EXPIRE, token);
+                } catch (Exception e) {
+                    JLog.error("redis exception errMsg=" + e.getMessage(), 101222201);
+                    loginResponse.setErrNo(101222201);
+                    loginResponse.setErrMsg("redis exception");
+                    return loginResponse;
+                }
+                // 组建返回给前端的结果
+                loginResponse.setData(token);
+                break;
+            case 2:
+                loginResponse.setErrNo(101222150);
+                loginResponse.setErrMsg("unvalid prisonerCodeNum");
+                break;
+            case 3:
+                loginResponse.setErrNo(101222151);
+                loginResponse.setErrMsg("unvalid password");
+                break;
+            default:
+                loginResponse.setErrNo(101222152);
+                loginResponse.setErrMsg("unknown exception");
+                break;
+        }
+        return loginResponse;
     }
 }
