@@ -9,7 +9,7 @@ import com.gaofeng.prisonusercenter.beans.prisoner.LoginReq;
 import com.gaofeng.prisonusercenter.beans.prisoner.LoginResponse;
 import com.gaofeng.prisonusercenter.beans.prisoner.LogoutReq;
 import com.gaofeng.prisonusercenter.beans.prisoner.RegisterReq;
-import com.gaofeng.prisonusercenter.service.prisoner.PrisonerRegisterService;
+import com.gaofeng.prisonusercenter.service.PrisonerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,11 +29,11 @@ import javax.validation.Valid;
 @RequestMapping(value = "prisoner")
 public class PrisonerController {
 
-    private PrisonerRegisterService prs;
+    private PrisonerService ps;
 
     @Autowired
-    public PrisonerController(PrisonerRegisterService prisonerRegisterService) {
-        this.prs = prisonerRegisterService;
+    public PrisonerController(PrisonerService prisonerService) {
+        this.ps = prisonerService;
     }
 
     /**
@@ -49,7 +49,7 @@ public class PrisonerController {
         JResponse jResponse = JResponse.initResponse(request, JResponse.class);
         JLog.info("prisoner register prisonerCodeNum=" + registerReq.getPrisonerCodeNum());
         // 对用户进行注册
-        Integer registerRet = prs.register(registerReq);
+        Integer registerRet = ps.register(registerReq);
 
         // 根据不同registerRet值，返回给前端相应的结果 0：数据库存储时出现错误 1：注册成功
         switch (registerRet) {
@@ -84,7 +84,7 @@ public class PrisonerController {
         JLog.info("prisoner login prisonerCodeNum=" + loginReq.getPrisonerCodeNum());
 
         // 用户登陆
-        Integer loginRet = prs.login(loginReq);
+        Integer loginRet = ps.login(loginReq);
 
         // 根据不同的LoginRet值返回不同的错误信息
         switch (loginRet) {

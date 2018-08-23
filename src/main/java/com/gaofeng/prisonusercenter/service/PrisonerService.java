@@ -1,4 +1,4 @@
-package com.gaofeng.prisonusercenter.service.prisoner;
+package com.gaofeng.prisonusercenter.service;
 
 import com.didi.meta.javalib.Conversion;
 import com.didi.meta.javalib.IdUtil;
@@ -17,12 +17,12 @@ import org.springframework.stereotype.Service;
  * @Description:
  */
 @Service
-public class PrisonerRegisterService {
+public class PrisonerService {
 
     private PrisonerMapper pm;
 
     @Autowired
-    public PrisonerRegisterService(PrisonerMapper prisonerMapper) {
+    public PrisonerService(PrisonerMapper prisonerMapper) {
         this.pm = prisonerMapper;
     }
 
