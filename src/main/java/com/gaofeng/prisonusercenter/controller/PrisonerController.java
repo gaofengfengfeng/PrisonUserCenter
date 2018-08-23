@@ -7,6 +7,7 @@ import com.didi.meta.javalib.service.JRedisPoolService;
 import com.gaofeng.prisonusercenter.InitConfig;
 import com.gaofeng.prisonusercenter.beans.prisoner.LoginReq;
 import com.gaofeng.prisonusercenter.beans.prisoner.LoginResponse;
+import com.gaofeng.prisonusercenter.beans.prisoner.LogoutReq;
 import com.gaofeng.prisonusercenter.beans.prisoner.RegisterReq;
 import com.gaofeng.prisonusercenter.service.prisoner.PrisonerRegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,5 +121,29 @@ public class PrisonerController {
                 break;
         }
         return loginResponse;
+    }
+
+    /**
+     * 犯人注销
+     *
+     * @param request
+     * @param logoutReq
+     *
+     * @return
+     */
+    @RequestMapping(value = "/logout")
+    public JResponse logout(HttpServletRequest request, @RequestBody @Valid LogoutReq logoutReq) {
+        JResponse jResponse = JResponse.initResponse(request, JResponse.class);
+        JLog.info("prisoner logout prisonerCodeNum=" + logoutReq.getPrisonerCodeNum());
+        // 从redis中寻找该用户的token是否还存在，如果不存在直接返回注销成功，如果存在，删除了再返回注销成功
+        try {
+            Jedis jedis = JRedisPoolService.getJedisPool(InitConfig.REDISPOOL).getResource();
+            jedis.del(logoutReq.getPrisonerCodeNum());
+        } catch (Exception e) {
+            JLog.error("redis exception errMsg=" + e.getMessage(), 101230938);
+            jResponse.setErrNo(101230938);
+            jResponse.setErrMsg("redis exception");
+        }
+        return jResponse;
     }
 }
