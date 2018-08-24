@@ -1,13 +1,13 @@
 package com.gaofeng.prisonusercenter.beans.prisonerfamily;
 
-import com.didi.meta.javalib.JRequest;
+import com.gaofeng.prisonusercenter.beans.common.BaseReq;
 
 /**
  * @Author: gaofeng
  * @Date: 2018-08-23
  * @Description:
  */
-public class RegisterReq extends JRequest {
+public class RegisterReq extends BaseReq {
 
     private String username;
     private String password;

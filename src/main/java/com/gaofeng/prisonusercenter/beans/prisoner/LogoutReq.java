@@ -1,13 +1,13 @@
 package com.gaofeng.prisonusercenter.beans.prisoner;
 
-import com.didi.meta.javalib.JRequest;
+import com.gaofeng.prisonusercenter.beans.common.BaseReq;
 
 /**
  * @Author: gaofeng
  * @Date: 2018-08-23
  * @Description:
  */
-public class LogoutReq extends JRequest {
+public class LogoutReq extends BaseReq {
     private String prisonerCodeNum;
 
     public String getPrisonerCodeNum() {
