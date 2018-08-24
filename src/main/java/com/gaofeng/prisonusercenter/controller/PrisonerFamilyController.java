@@ -3,12 +3,15 @@ package com.gaofeng.prisonusercenter.controller;
 import com.didi.meta.javalib.JLog;
 import com.didi.meta.javalib.JResponse;
 import com.didi.meta.javalib.service.JRedisPoolService;
+import com.gaofeng.prisonDBlib.beans.PrisonerFamilyRegisterReq;
+import com.gaofeng.prisonDBlib.service.PrisonerFamilyTranService;
 import com.gaofeng.prisonusercenter.InitConfig;
 import com.gaofeng.prisonusercenter.beans.common.LoginResponse;
 import com.gaofeng.prisonusercenter.beans.prisonerfamily.LoginReq;
 import com.gaofeng.prisonusercenter.beans.prisonerfamily.LogoutReq;
 import com.gaofeng.prisonusercenter.beans.prisonerfamily.RegisterReq;
 import com.gaofeng.prisonusercenter.service.PrisonerFamilyService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,10 +31,13 @@ import javax.validation.Valid;
 public class PrisonerFamilyController {
 
     private PrisonerFamilyService pfs;
+    private PrisonerFamilyTranService pfts;
 
     @Autowired
-    public PrisonerFamilyController(PrisonerFamilyService prisonerFamilyService) {
+    public PrisonerFamilyController(PrisonerFamilyService prisonerFamilyService,
+                                    PrisonerFamilyTranService prisonerFamilyTranService) {
         this.pfs = prisonerFamilyService;
+        this.pfts = prisonerFamilyTranService;
     }
 
     /**
@@ -47,8 +53,12 @@ public class PrisonerFamilyController {
         JResponse jResponse = JResponse.initResponse(request, JResponse.class);
         JLog.info("prisonerFamily register username=" + registerReq.getUsername());
 
+        // 实体属性拷贝，调用dblib中的事务方法进行犯属用户注册
+        PrisonerFamilyRegisterReq pfrr = new PrisonerFamilyRegisterReq();
+        BeanUtils.copyProperties(registerReq, pfrr);
+
         // 注册
-        Integer registerRet = pfs.register(registerReq);
+        Integer registerRet = pfts.prisonerFamilyRegister(pfrr);
 
         // 1:成功 2：用户名已经存在 3：身份证、手机号已经注册过 4：数据库错误
         switch (registerRet) {

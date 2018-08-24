@@ -1,6 +1,9 @@
 package com.gaofeng.prisonusercenter.beans.prisonerfamily;
 
+import com.gaofeng.prisonDBlib.beans.PrisonerFamilyRegisterReq;
 import com.gaofeng.prisonusercenter.beans.common.BaseReq;
+
+import java.util.List;
 
 /**
  * @Author: gaofeng
@@ -17,6 +20,9 @@ public class RegisterReq extends BaseReq {
     private String phone;
     private String homeAddress;
     private String educationDegree; // 教育程度
+    private Long prisonerId;
+    private String relationship;
+    private List<PrisonerFamilyRegisterReq.Material> personalMaterialList;
 
     public String getUsername() {
         return username;
@@ -82,6 +88,30 @@ public class RegisterReq extends BaseReq {
         this.educationDegree = educationDegree;
     }
 
+    public Long getPrisonerId() {
+        return prisonerId;
+    }
+
+    public void setPrisonerId(Long prisonerId) {
+        this.prisonerId = prisonerId;
+    }
+
+    public String getRelationship() {
+        return relationship;
+    }
+
+    public void setRelationship(String relationship) {
+        this.relationship = relationship;
+    }
+
+    public List<PrisonerFamilyRegisterReq.Material> getPersonalMaterialList() {
+        return personalMaterialList;
+    }
+
+    public void setPersonalMaterialList(List<PrisonerFamilyRegisterReq.Material> personalMaterialList) {
+        this.personalMaterialList = personalMaterialList;
+    }
+
     @Override
     public String toString() {
         return "RegisterReq{" +
@@ -93,6 +123,9 @@ public class RegisterReq extends BaseReq {
                 ", phone='" + phone + '\'' +
                 ", homeAddress='" + homeAddress + '\'' +
                 ", educationDegree='" + educationDegree + '\'' +
+                ", prisonerId=" + prisonerId +
+                ", relationship='" + relationship + '\'' +
+                ", personalMaterialList=" + personalMaterialList +
                 '}';
     }
 }

@@ -26,8 +26,17 @@ public class FindByNameRet {
     }
 
     public class ReturnPrisoner {
+        private Long prisonerId;
         private String prisonerName;
         private String prisonerCodeNum;
+
+        public Long getPrisonerId() {
+            return prisonerId;
+        }
+
+        public void setPrisonerId(Long prisonerId) {
+            this.prisonerId = prisonerId;
+        }
 
         public String getPrisonerName() {
             return prisonerName;
@@ -47,8 +56,9 @@ public class FindByNameRet {
 
         @Override
         public String toString() {
-            return "returnPrisoner{" +
-                    "prisonerName='" + prisonerName + '\'' +
+            return "ReturnPrisoner{" +
+                    "prisonerId=" + prisonerId +
+                    ", prisonerName='" + prisonerName + '\'' +
                     ", prisonerCodeNum='" + prisonerCodeNum + '\'' +
                     '}';
         }
