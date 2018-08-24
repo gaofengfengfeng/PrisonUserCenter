@@ -2,14 +2,13 @@ package com.gaofeng.prisonusercenter.controller;
 
 import com.didi.meta.javalib.JLog;
 import com.didi.meta.javalib.JResponse;
-import com.didi.meta.javalib.JToken;
 import com.didi.meta.javalib.service.JRedisPoolService;
+import com.gaofeng.prisonDBlib.model.Prisoner;
 import com.gaofeng.prisonusercenter.InitConfig;
-import com.gaofeng.prisonusercenter.beans.prisoner.LoginReq;
+import com.gaofeng.prisonusercenter.beans.prisoner.*;
 import com.gaofeng.prisonusercenter.beans.common.LoginResponse;
-import com.gaofeng.prisonusercenter.beans.prisoner.LogoutReq;
-import com.gaofeng.prisonusercenter.beans.prisoner.RegisterReq;
 import com.gaofeng.prisonusercenter.service.PrisonerService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +17,8 @@ import redis.clients.jedis.Jedis;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author: gaofeng
@@ -139,6 +140,26 @@ public class PrisonerController {
             jResponse.setErrNo(101230938);
             jResponse.setErrMsg("redis exception");
         }
+        return jResponse;
+    }
+
+    @RequestMapping(value = "/findByName")
+    public JResponse findByName(HttpServletRequest request,
+                                @RequestBody @Valid FindByNameReq fbnr) {
+        JResponse jResponse = JResponse.initResponse(request, JResponse.class);
+        JLog.info("prisoner findByName prisonerName=" + fbnr.getPrisonerName());
+
+        // 根据犯人姓名查找数据库内的记录
+        List<Prisoner> prisonerList = ps.findByPrisonerName(fbnr.getPrisonerName());
+
+        FindByNameRet findByNameRet = new FindByNameRet();
+        List<FindByNameRet.ReturnPrisoner> returnPrisonerList = new ArrayList<>();
+        for (Prisoner prisoner : prisonerList) {
+            FindByNameRet.ReturnPrisoner returnPrisoner = findByNameRet.new ReturnPrisoner();
+            BeanUtils.copyProperties(prisoner, returnPrisoner);
+            returnPrisonerList.add(returnPrisoner);
+        }
+        jResponse.setData(returnPrisonerList);
         return jResponse;
     }
 }

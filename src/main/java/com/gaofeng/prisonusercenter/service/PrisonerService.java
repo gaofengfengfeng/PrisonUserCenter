@@ -11,6 +11,8 @@ import com.gaofeng.prisonusercenter.beans.prisoner.RegisterReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @Author: gaofeng
  * @Date: 2018-08-21
@@ -98,5 +100,19 @@ public class PrisonerService extends BaseService {
             return 3;
         }
         return 1;
+    }
+
+    /**
+     * 根据犯人姓名，查找犯人记录
+     *
+     * @param prisonerName
+     *
+     * @return
+     */
+    public List<Prisoner> findByPrisonerName(String prisonerName) {
+        JLog.info("findByPrisonerName service prisonerName=" + prisonerName);
+
+        // 查找数据库
+        return pm.findByPrisonerName(prisonerName);
     }
 }
